@@ -11,10 +11,14 @@ class AFPSGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(EditDefaultsOnly,Category="spectator")
+	TSubclassOf<AActor> Spectator;
+
 public:
 
 	AFPSGameMode();
-	 void GameComplete(AActor* actor);
+	 void GameComplete(APawn* actor);
 	 UFUNCTION(BlueprintImplementableEvent, Category = "gameplay")
 		 void OnGameComplete(AActor* actor);
 };

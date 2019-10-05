@@ -4,6 +4,7 @@
 #include "FPSHUD.h"
 #include "FPSCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AFPSGameMode::AFPSGameMode()
 {
@@ -15,8 +16,21 @@ AFPSGameMode::AFPSGameMode()
 	HUDClass = AFPSHUD::StaticClass();
 }
 
-void AFPSGameMode::GameComplete(AActor* actor)
+void AFPSGameMode::GameComplete(APawn* actor)
 {
 	actor->DisableInput(nullptr);
 	OnGameComplete(actor);
+	TArray<AActor*> ReturnedActors;
+	UGameplayStatics::GetAllActorsOfClass(this, Spectator,ReturnedActors);
+	AActor* NewTarget;
+	if(ReturnedActors.Num()>0)
+	{
+		NewTarget = ReturnedActors[0];
+		APlayerController* playerC = Cast<APlayerController>(actor->GetController());
+		if (playerC)
+		{
+			playerC->SetViewTargetWithBlend(NewTarget, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+		}
+	}
+	
 }
